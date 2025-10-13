@@ -69,7 +69,7 @@ export default function StockChart({
         wickUpColor: '#26a69a',
         wickDownColor: '#ef5350',
       });
-      series.setData(data);
+      data && series?.setData(data);
     } else if (chartType === 'line') {
       series = chart.addSeries(LineSeries, {
         color: '#2962FF',

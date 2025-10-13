@@ -19,7 +19,7 @@ export default function Dashboard() {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [chartData, setChartData] = useState<LineData[]>([]);
   const [chartType, setChartType] = useState<'candlestick' | 'line' | 'ohlc'>('line');
-  
+
   // Group tickers by symbol and keep the latest data
   const latestTickers = tickers.reduce<Record<string, TickerData>>((acc, ticker) => {
     if (!acc[ticker.symbol] || acc[ticker.symbol].ts < ticker.ts) {
@@ -43,17 +43,16 @@ export default function Dashboard() {
 
     // Find tickers for the selected symbol
     const symbolTickers = tickers.filter(t => t.symbol === selectedSymbol);
-    
+
     if (symbolTickers.length > 0) {
       // Convert to chart data format
       const newChartData = symbolTickers.map(ticker => ({
         time: ticker.ts / 1000, // Convert to seconds for lightweight-charts
         value: ticker.price,
       }));
-      
+
       // Sort by time
       newChartData.sort((a, b) => a.time - b.time);
-      
       setChartData(newChartData);
     }
   }, [tickers, selectedSymbol]);
@@ -63,10 +62,10 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Stock List Panel */}
         <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold mb-4">Market Overview</h2>
-          <div className="space-y-2">
+          <h2 className="text-lg font-semibold mb-4 bg-white dark:bg-gray-800 z-1">Market Overview</h2>
+          <div className="space-y-2 h-fit mt-4 overflow-y-scroll">
             {uniqueTickers.map((ticker) => (
-              <div 
+              <div
                 key={ticker.symbol}
                 className={`p-3 rounded-md cursor-pointer transition-colors ${selectedSymbol === ticker.symbol ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                 onClick={() => setSelectedSymbol(ticker.symbol)}
@@ -97,19 +96,19 @@ export default function Dashboard() {
               {selectedSymbol ? `${selectedSymbol} Chart` : 'Select a stock'}
             </h2>
             <div className="flex space-x-2">
-              <button 
+              <button
                 className={`px-3 py-1 text-sm rounded ${chartType === 'line' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
                 onClick={() => setChartType('line')}
               >
                 Line
               </button>
-              <button 
+              <button
                 className={`px-3 py-1 text-sm rounded ${chartType === 'candlestick' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
                 onClick={() => setChartType('candlestick')}
               >
                 Candlestick
               </button>
-              <button 
+              <button
                 className={`px-3 py-1 text-sm rounded ${chartType === 'ohlc' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
                 onClick={() => setChartType('ohlc')}
               >
@@ -117,12 +116,12 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-          
+
           {selectedSymbol && chartData.length > 0 ? (
             <div className="chart-container">
-              <StockChart 
-                data={chartData} 
-                chartType={chartType} 
+              <StockChart
+                data={chartData}
+                chartType={chartType}
                 symbol={selectedSymbol}
                 width={600}
                 height={400}

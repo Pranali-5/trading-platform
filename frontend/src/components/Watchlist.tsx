@@ -147,10 +147,19 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
   const addSymbolToWatchlist = (symbolToAdd: string = newSymbol) => {
     if (!symbolToAdd.trim() || !selectedWatchlist) return;
 
+    const normalizedSymbol = symbolToAdd.toUpperCase();
+    // Prevent adding duplicates
+    if (Array.isArray(watchlistItems) && watchlistItems.some(item => item.symbol === normalizedSymbol)) {
+      setNewSymbol('');
+      setIsAddingSymbol(false);
+      setSearchResults([]);
+      return;
+    }
+
     fetch(`${BASE_URL}/api/watchlists/${selectedWatchlist}/items`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: symbolToAdd.toUpperCase() })
+      body: JSON.stringify({ symbol: normalizedSymbol })
     })
       .then(res => res.json())
       .then(data => {
@@ -195,7 +204,7 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
             </svg>
           </span>
-          My Watchlists
+          Watchlists
         </h2>
         <button
           onClick={() => setIsCreating(!isCreating)}
@@ -213,7 +222,7 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              New Watchlist
+              Watchlist
             </>
           )}
         </button>
@@ -301,7 +310,7 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
                   </div>
                 )}
               </div>
-              
+
               {searchResults.length > 0 && newSymbol.trim() && (
                 <div className="absolute z-10 mt-1 w-full max-w-md bg-white dark:bg-gray-800 border rounded-md shadow-lg max-h-60 overflow-auto">
                   {searchResults.map((result) => (
@@ -322,14 +331,14 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
                   ))}
                 </div>
               )}
-              
+
               {/* Quick add buttons for popular symbols */}
               <div className="mb-2 flex gap-1 overflow-x-auto">
                 {['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA'].map(symbol => (
                   <button
                     key={symbol}
                     onClick={() => {
-                      setNewSymbol(symbol);
+                      addSymbolToWatchlist(symbol);
                     }}
                     className="px-2 py-1 border rounded text-xs hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-600"
                   >
@@ -337,7 +346,7 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
                   </button>
                 ))}
               </div>
-              
+
               <div className="flex space-x-2">
                 <button
                   onClick={() => addSymbolToWatchlist()}
@@ -378,13 +387,13 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
               No symbols in this watchlist
             </p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+            <div className="grid gap-2 mb-4">
               {watchlistItems.map(item => {
                 const ticker = latestTickers[item.symbol];
                 return (
                   <div
                     key={item.id}
-                    className="p-3 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
+                    className="p-3 bg-gray-100 dark:bg-gray-700 rounded flex justify-between items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 w-full"
                     onClick={() => onSelectSymbol(item.symbol)}
                   >
                     <div className="flex items-center">

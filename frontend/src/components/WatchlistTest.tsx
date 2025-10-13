@@ -371,10 +371,10 @@ export default function WatchlistTest() {
                     ) : (
                       <div>
                         <h4 className="font-medium mb-2">Symbols:</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4 w-full">
                           {watchlist.items?.map(item => (
-                            <div key={item.id} className="flex justify-between items-center p-2 border rounded bg-gray-50 hover:bg-gray-100">
-                              <div className="flex items-center">
+                            <div key={item.id} className="flex justify-between items-center p-2 border rounded bg-gray-50 hover:bg-gray-100 w-96">
+                              <div className="flex items-center w-44">
                                 <span className="font-medium text-blue-600">{item.symbol}</span>
                               </div>
                               <button

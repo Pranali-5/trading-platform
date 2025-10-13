@@ -13,7 +13,7 @@ export default function HomePage() {
   const userId = "user123";
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
       <header className="bg-white dark:bg-gray-800 shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold">Trading Platform</h1>
@@ -21,7 +21,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 flex-1">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar with Watchlist */}
           <div className="lg:col-span-1">
@@ -52,11 +52,11 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* <footer className="bg-white dark:bg-gray-800 mt-12 py-6 border-t border-gray-200 dark:border-gray-700">
+      <footer className="bg-white dark:bg-gray-800 mt-auto py-6 border-t border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 text-center text-gray-500 dark:text-gray-400">
           <p>© {new Date().getFullYear()} Trading Platform. All rights reserved.</p>
         </div>
-      </footer> */}
+      </footer>
     </div>
   );
 }
