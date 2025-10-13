@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useTickers } from '@/hooks/useTickers';
 import StockChart from './StockChart';
-import { LineData } from 'lightweight-charts';
+import { LineData, UTCTimestamp } from 'lightweight-charts';
 
 interface TickerData {
   symbol: string;
@@ -17,7 +17,7 @@ interface TickerData {
 export default function Dashboard() {
   const tickers = useTickers(10);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
-  const [chartData, setChartData] = useState<LineData[]>([]);
+  const [chartData, setChartData] = useState<LineData<UTCTimestamp>[]>([]);
   const [chartType, setChartType] = useState<'candlestick' | 'line' | 'ohlc'>('line');
 
   // Group tickers by symbol and keep the latest data
@@ -46,8 +46,8 @@ export default function Dashboard() {
 
     if (symbolTickers.length > 0) {
       // Convert to chart data format
-      const newChartData = symbolTickers.map(ticker => ({
-        time: ticker.ts / 1000, // Convert to seconds for lightweight-charts
+      const newChartData: LineData<UTCTimestamp>[] = symbolTickers.map(ticker => ({
+        time: (ticker.ts / 1000) as UTCTimestamp,
         value: ticker.price,
       }));
 
@@ -61,10 +61,10 @@ export default function Dashboard() {
     <div className="dashboard">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Stock List Panel */}
-        <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold mb-4 bg-white dark:bg-gray-800 z-1">Market Overview</h2>
-          <div className="space-y-2 h-fit mt-4 overflow-y-scroll">
-            {uniqueTickers.map((ticker) => (
+        <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 max-h-[calc(100vh-220px)] overflow-y-auto">
+          <h2 className="text-lg font-semibold mb-4">Market Overview</h2>
+          <div className="space-y-2">
+            {uniqueTickers.slice(0, 5).map((ticker) => (
               <div
                 key={ticker.symbol}
                 className={`p-3 rounded-md cursor-pointer transition-colors ${selectedSymbol === ticker.symbol ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}

@@ -196,7 +196,7 @@ export default function Watchlist({ userId, onSelectSymbol }: WatchlistProps) {
   };
   console.log('watchlistItems:', watchlistItems)
   return (
-    <div className="watchlist bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700">
+    <div className="watchlist bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 border border-gray-200 dark:border-gray-700 max-h-[calc(100vh-220px)] overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
           <span className="inline-block mr-2">
