@@ -1,5 +1,5 @@
 import express from 'express';
-import { createWatchlist, getWatchlistById, getWatchlistsForUser, addItemToWatchlist, removeItemFromWatchlist } from '../models/mock-watchlist';
+import { createWatchlist, getWatchlistById, getWatchlistsForUser, addItemToWatchlist, removeItemFromWatchlist, getWatchlistWithItems } from '../models/mock-watchlist.js';
 
 const router = express.Router();
 
@@ -19,11 +19,11 @@ router.get('/watchlists', async (req, res) => {
   }
 });
 
-// Get a specific watchlist by ID
+// Get a specific watchlist by ID with items
 router.get('/watchlists/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const watchlist = await getWatchlistById(id);
+    const watchlist = await getWatchlistWithItems(id);
     
     if (!watchlist) {
       return res.status(404).json({ error: 'Watchlist not found' });

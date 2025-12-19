@@ -1,4 +1,4 @@
-import { Watchlist, WatchlistItem, WatchlistWithItems } from './watchlist';
+import { Watchlist, WatchlistItem, WatchlistWithItems } from './watchlist.js';
 
 // In-memory storage for mock data
 const watchlists: Map<number, Watchlist> = new Map();

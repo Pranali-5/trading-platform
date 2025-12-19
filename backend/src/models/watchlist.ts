@@ -1,5 +1,5 @@
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { createPool } from '../db';
+import { createPool } from '../db.js';
 
 export interface Watchlist {
   id?: number;

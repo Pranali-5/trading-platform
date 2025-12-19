@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { broadcast } from '../ws';
+import { broadcast } from '../ws.js';
 
 const router = Router();
 

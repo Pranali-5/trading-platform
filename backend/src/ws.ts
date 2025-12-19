@@ -1,6 +1,6 @@
 import { Server as HTTPServer } from 'http';
 import { WebSocketServer as WSServer, WebSocket } from 'ws';
-import { alphaVantageClient } from './services/alphavantage';
+import { alphaVantageClient } from './services/alphavantage.js';
 
 let wss: WSServer | null = null;
 let marketInterval: NodeJS.Timeout | null = null;

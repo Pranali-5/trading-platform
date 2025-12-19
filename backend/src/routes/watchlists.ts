@@ -7,7 +7,7 @@ import {
   deleteWatchlist,
   addItemToWatchlist,
   removeItemFromWatchlist
-} from '../models/watchlist';
+} from '../models/watchlist.js';
 
 const router = express.Router();
 
