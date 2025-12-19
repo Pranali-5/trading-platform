@@ -1,5 +1,6 @@
-'use client'
-import { useEffect, useRef, useState } from 'react';
+"use client";
+import { useEffect, useRef, useState } from "react";
+import { getWebSocketUrl } from "@/lib/websocket";
 
 type Notification = { title?: string; message?: string; ts: number };
 
@@ -8,13 +9,13 @@ export function useNotifications() {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws';
+    const url = getWebSocketUrl();
     const ws = new WebSocket(url);
     wsRef.current = ws;
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data?.type === 'notification' && data?.payload) {
+        if (data?.type === "notification" && data?.payload) {
           setNotifications((prev) => [data.payload as Notification, ...prev]);
         }
       } catch {
@@ -26,5 +27,3 @@ export function useNotifications() {
 
   return notifications;
 }
-
-

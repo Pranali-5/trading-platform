@@ -1,5 +1,6 @@
-'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+"use client";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { getWebSocketUrl } from "@/lib/websocket";
 
 export interface Ticker {
   symbol: string;
@@ -27,8 +28,8 @@ export function useTickers(limit = 100) {
   const maxReconnectAttempts = 5;
 
   const connect = useCallback(() => {
-    const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws';
-    
+    const url = getWebSocketUrl();
+
     try {
       const ws = new WebSocket(url);
       wsRef.current = ws;
@@ -42,14 +43,16 @@ export function useTickers(limit = 100) {
       ws.onmessage = (event) => {
         try {
           const data: WebSocketMessage = JSON.parse(event.data);
-          
-          if (data?.type === 'ticker' && data?.payload) {
+
+          if (data?.type === "ticker" && data?.payload) {
             const ticker = data.payload;
             setTickers((prev) => {
               // Check if we already have this exact update
-              const exists = prev.some(t => t.symbol === ticker.symbol && t.ts === ticker.ts);
+              const exists = prev.some(
+                (t) => t.symbol === ticker.symbol && t.ts === ticker.ts
+              );
               if (exists) return prev;
-              
+
               // Add new ticker and maintain limit
               const updated = [ticker, ...prev].slice(0, limit);
               return updated;
@@ -63,24 +66,29 @@ export function useTickers(limit = 100) {
       ws.onclose = () => {
         setIsConnected(false);
         wsRef.current = null;
-        
+
         // Attempt reconnection
         if (reconnectAttempts.current < maxReconnectAttempts) {
-          const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
+          const delay = Math.min(
+            1000 * Math.pow(2, reconnectAttempts.current),
+            30000
+          );
           reconnectTimeoutRef.current = setTimeout(() => {
             reconnectAttempts.current++;
             connect();
           }, delay);
         } else {
-          setConnectionError('Unable to connect to market data. Please refresh.');
+          setConnectionError(
+            "Unable to connect to market data. Please refresh."
+          );
         }
       };
 
       ws.onerror = () => {
-        setConnectionError('Connection error');
+        setConnectionError("Connection error");
       };
     } catch {
-      setConnectionError('Failed to establish connection');
+      setConnectionError("Failed to establish connection");
     }
   }, [limit]);
 
@@ -102,18 +110,20 @@ export function useTickers(limit = 100) {
 
 // Hook to get connection status
 export function useWebSocketStatus() {
-  const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
-  
+  const [status, setStatus] = useState<
+    "connecting" | "connected" | "disconnected"
+  >("connecting");
+
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws';
+    const url = getWebSocketUrl();
     const ws = new WebSocket(url);
-    
-    ws.onopen = () => setStatus('connected');
-    ws.onclose = () => setStatus('disconnected');
-    ws.onerror = () => setStatus('disconnected');
-    
+
+    ws.onopen = () => setStatus("connected");
+    ws.onclose = () => setStatus("disconnected");
+    ws.onerror = () => setStatus("disconnected");
+
     return () => ws.close();
   }, []);
-  
+
   return status;
 }
