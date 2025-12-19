@@ -36,7 +36,7 @@ Create a `.env.local` file in the `frontend` directory:
 
 ```env
 # Backend API URL (required)
-NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_BASE_URL=http://localhost:4000
 
 # WebSocket URL (required)
 NEXT_PUBLIC_WS_URL=ws://localhost:4000/ws
@@ -86,7 +86,7 @@ npm start
    - Go to Project Settings → Environment Variables
    - Add the following:
      ```
-     NEXT_PUBLIC_API_URL=https://trading-platform-production-4729.up.railway.app
+     NEXT_PUBLIC_BASE_URL=https://trading-platform-production-4729.up.railway.app
      NEXT_PUBLIC_WS_URL=wss://trading-platform-production-4729.up.railway.app/ws
      ```
    - **Important:** Use `wss://` (not `ws://`) for production WebSocket connections
@@ -129,7 +129,7 @@ docker build -t trading-frontend .
 
 ```bash
 docker run -p 3000:3000 \
-  -e NEXT_PUBLIC_API_URL=https://your-backend.com \
+  -e NEXT_PUBLIC_BASE_URL=https://your-backend.com \
   -e NEXT_PUBLIC_WS_URL=wss://your-backend.com/ws \
   trading-frontend
 ```
@@ -275,7 +275,7 @@ const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws'
 
 ### API Calls Failing
 
-- Verify `NEXT_PUBLIC_API_URL` is set correctly
+- Verify `NEXT_PUBLIC_BASE_URL` is set correctly
 - Check CORS settings on backend
 - Verify backend is accessible from frontend domain
 
@@ -293,10 +293,10 @@ const url = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:4000/ws'
 
 ## 📝 Environment Variables Reference
 
-| Variable              | Description          | Required | Example                    |
-| --------------------- | -------------------- | -------- | -------------------------- |
-| `NEXT_PUBLIC_API_URL` | Backend API base URL | Yes      | `https://api.example.com`  |
-| `NEXT_PUBLIC_WS_URL`  | WebSocket URL        | Yes      | `wss://api.example.com/ws` |
+| Variable               | Description          | Required | Example                    |
+| ---------------------- | -------------------- | -------- | -------------------------- |
+| `NEXT_PUBLIC_BASE_URL` | Backend API base URL | Yes      | `https://api.example.com`  |
+| `NEXT_PUBLIC_WS_URL`   | WebSocket URL        | Yes      | `wss://api.example.com/ws` |
 
 ## 🔗 Related Links
 
