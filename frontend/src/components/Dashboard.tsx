@@ -39,7 +39,7 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
       const prevPrice = previousPrices.current[ticker.symbol] || ticker.price;
       const change = ticker.price - prevPrice;
       const changePercent = prevPrice > 0 ? (change / prevPrice) * 100 : 0;
-      
+
       acc[ticker.symbol] = {
         ...ticker,
         change,
@@ -63,14 +63,14 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
   const chartData = tickers
     .filter(t => t.symbol === selectedSymbol)
     .map(ticker => ({
-      time: Math.floor(ticker.ts / 1000),
+      time: String(Math.floor(ticker.ts / 1000)),
       open: ticker.open || ticker.price,
       high: ticker.high || ticker.price,
       low: ticker.low || ticker.price,
       close: ticker.price,
       value: ticker.price,
     }))
-    .sort((a, b) => a.time - b.time);
+    .sort((a, b) => +a.time - +b.time);
 
   const selectedTicker = selectedSymbol ? latestTickers[selectedSymbol] : null;
 
@@ -133,7 +133,7 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
               <span className="text-xs text-foreground-muted">Live</span>
             </div>
           </div>
-          
+
           <div className="space-y-2 max-h-[500px] overflow-y-auto pr-1">
             {uniqueTickers.length === 0 ? (
               <div className="text-center py-12">
@@ -175,11 +175,10 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
                       <span className="text-xl font-mono font-bold tabular-nums">
                         ${selectedTicker.price.toFixed(2)}
                       </span>
-                      <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
-                        (selectedTicker.changePercent || 0) >= 0 
-                          ? 'text-profit bg-profit-bg' 
-                          : 'text-loss bg-loss-bg'
-                      }`}>
+                      <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${(selectedTicker.changePercent || 0) >= 0
+                        ? 'text-profit bg-profit-bg'
+                        : 'text-loss bg-loss-bg'
+                        }`}>
                         {(selectedTicker.changePercent || 0) >= 0 ? '+' : ''}
                         {(selectedTicker.changePercent || 0).toFixed(2)}%
                       </span>
@@ -199,11 +198,10 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
                   <button
                     key={tf}
                     onClick={() => setTimeframe(tf)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
-                      timeframe === tf
-                        ? 'bg-surface text-foreground shadow-sm'
-                        : 'text-foreground-muted hover:text-foreground'
-                    }`}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${timeframe === tf
+                      ? 'bg-surface text-foreground shadow-sm'
+                      : 'text-foreground-muted hover:text-foreground'
+                      }`}
                   >
                     {tf}
                   </button>
@@ -214,9 +212,8 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
               <div className="flex bg-secondary rounded-lg p-1">
                 <button
                   onClick={() => setChartType('line')}
-                  className={`p-1.5 rounded-md transition-all ${
-                    chartType === 'line' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
-                  }`}
+                  className={`p-1.5 rounded-md transition-all ${chartType === 'line' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
+                    }`}
                   title="Line Chart"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -225,9 +222,8 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
                 </button>
                 <button
                   onClick={() => setChartType('candlestick')}
-                  className={`p-1.5 rounded-md transition-all ${
-                    chartType === 'candlestick' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
-                  }`}
+                  className={`p-1.5 rounded-md transition-all ${chartType === 'candlestick' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
+                    }`}
                   title="Candlestick Chart"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -236,9 +232,8 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
                 </button>
                 <button
                   onClick={() => setChartType('ohlc')}
-                  className={`p-1.5 rounded-md transition-all ${
-                    chartType === 'ohlc' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
-                  }`}
+                  className={`p-1.5 rounded-md transition-all ${chartType === 'ohlc' ? 'bg-surface shadow-sm' : 'text-foreground-muted hover:text-foreground'
+                    }`}
                   title="OHLC Chart"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -295,25 +290,24 @@ export default function Dashboard({ selectedSymbol: propSelectedSymbol }: Dashbo
 }
 
 // Stat Card Component
-function StatCard({ 
-  label, 
-  value, 
-  trend, 
-  icon 
-}: { 
-  label: string; 
-  value: string; 
-  trend?: 'up' | 'down'; 
+function StatCard({
+  label,
+  value,
+  trend,
+  icon
+}: {
+  label: string;
+  value: string;
+  trend?: 'up' | 'down';
   icon: React.ReactNode;
 }) {
   return (
     <div className="card p-4 animate-slide-up">
       <div className="flex items-center justify-between">
-        <div className={`p-2 rounded-lg ${
-          trend === 'up' ? 'bg-profit-bg text-profit' :
+        <div className={`p-2 rounded-lg ${trend === 'up' ? 'bg-profit-bg text-profit' :
           trend === 'down' ? 'bg-loss-bg text-loss' :
-          'bg-secondary text-foreground-muted'
-        }`}>
+            'bg-secondary text-foreground-muted'
+          }`}>
           {icon}
         </div>
       </div>
@@ -326,34 +320,32 @@ function StatCard({
 }
 
 // Stock Row Component
-function StockRow({ 
-  ticker, 
-  isSelected, 
+function StockRow({
+  ticker,
+  isSelected,
   onClick,
-  index 
-}: { 
-  ticker: TickerData; 
-  isSelected: boolean; 
+  index
+}: {
+  ticker: TickerData;
+  isSelected: boolean;
   onClick: () => void;
   index: number;
 }) {
   const isPositive = (ticker.changePercent || 0) >= 0;
-  
+
   return (
     <div
       onClick={onClick}
-      className={`p-3 rounded-xl cursor-pointer transition-all duration-200 animate-slide-up ${
-        isSelected 
-          ? 'bg-primary/10 border-2 border-primary/30' 
-          : 'bg-secondary/50 border-2 border-transparent hover:bg-secondary hover:border-border'
-      }`}
+      className={`p-3 rounded-xl cursor-pointer transition-all duration-200 animate-slide-up ${isSelected
+        ? 'bg-primary/10 border-2 border-primary/30'
+        : 'bg-secondary/50 border-2 border-transparent hover:bg-secondary hover:border-border'
+        }`}
       style={{ animationDelay: `${index * 30}ms` }}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
-            isPositive ? 'bg-profit-bg text-profit' : 'bg-loss-bg text-loss'
-          }`}>
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${isPositive ? 'bg-profit-bg text-profit' : 'bg-loss-bg text-loss'
+            }`}>
             {ticker.symbol.slice(0, 2)}
           </div>
           <div>

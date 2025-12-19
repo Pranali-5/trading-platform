@@ -408,8 +408,8 @@ export default function WatchlistTest() {
                       <div className="border rounded p-2">
                         <StockChart
                           data={mockStockData}
-                          width={600}
-                          height={300}
+                          // width={600}
+                          // height={300}
                           symbol={watchlist.items[0].symbol}
                           chartType={chartType}
                         />

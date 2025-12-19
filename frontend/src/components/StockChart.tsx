@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createChart, IChartApi, CandlestickSeries, LineSeries, BarSeries, ColorType } from 'lightweight-charts';
 
 interface ChartDataPoint {
-  time: number;
+  time: string;
   open?: number;
   high?: number;
   low?: number;
@@ -31,12 +31,12 @@ export default function StockChart({
     const checkTheme = () => {
       setIsDark(document.documentElement.classList.contains('dark'));
     };
-    
+
     checkTheme();
-    
+
     const observer = new MutationObserver(checkTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
+
     return () => observer.disconnect();
   }, []);
 
@@ -115,7 +115,7 @@ export default function StockChart({
         wickUpColor: colors.upColor,
         wickDownColor: colors.downColor,
       });
-      
+
       const candleData = data.map(item => ({
         time: item.time,
         open: item.open || item.value || 0,
@@ -137,7 +137,7 @@ export default function StockChart({
         priceLineWidth: 1,
         priceLineStyle: 2,
       });
-      
+
       const lineData = data.map(item => ({
         time: item.time,
         value: item.close || item.value || 0,
@@ -155,7 +155,7 @@ export default function StockChart({
         thinBars: false,
         openVisible: true,
       });
-      
+
       const ohlcData = data.map(item => ({
         time: item.time,
         open: item.open || item.value || 0,
@@ -196,8 +196,8 @@ export default function StockChart({
           <span className="text-xs font-medium text-foreground-muted">{symbol}</span>
         </div>
       )}
-      <div 
-        ref={chartContainerRef} 
+      <div
+        ref={chartContainerRef}
         className="w-full rounded-xl overflow-hidden border border-border"
         style={{ minHeight: '400px' }}
       />
