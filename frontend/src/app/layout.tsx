@@ -4,7 +4,7 @@ import "../styles/tokens.css";
 import { ReduxProvider } from "@/store/Provider";
 
 export const metadata: Metadata = {
-  title: "TradePro | Real-Time Stock Trading Platform",
+  title: "Trade | Real-Time Stock Trading Platform",
   description:
     "Professional-grade stock trading platform with real-time market data, interactive charts, and advanced watchlist management.",
   keywords: [

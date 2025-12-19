@@ -39,7 +39,7 @@ export default function HomePage() {
                 </svg>
               </div>
               <div>
-                <h1 className="text-xl font-bold tracking-tight text-foreground">TradePro</h1>
+                <h1 className="text-xl font-bold tracking-tight text-foreground">Trade</h1>
                 <p className="text-xs text-foreground-muted hidden sm:block">Real-Time Trading</p>
               </div>
             </div>
@@ -53,11 +53,11 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="text-sm font-mono text-foreground-muted tabular-nums">
-                {currentTime.toLocaleTimeString('en-US', { 
-                  hour: '2-digit', 
-                  minute: '2-digit', 
+                {currentTime.toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
                   second: '2-digit',
-                  hour12: true 
+                  hour12: true
                 })}
               </div>
             </div>
@@ -116,8 +116,8 @@ export default function HomePage() {
                   </div>
                 ) : (
                   notifications.slice(0, 5).map((n, idx) => (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className="p-3 bg-secondary rounded-lg border border-border hover:border-border-hover transition-colors animate-slide-up"
                       style={{ animationDelay: `${idx * 50}ms` }}
                     >
