@@ -39,11 +39,10 @@ export default function ThemeToggle() {
     >
       {/* Sun Icon */}
       <svg
-        className={`absolute w-5 h-5 text-amber-500 transition-all duration-500 ${
-          isDarkMode 
-            ? 'opacity-0 rotate-90 scale-0' 
-            : 'opacity-100 rotate-0 scale-100'
-        }`}
+        className={`absolute w-5 h-5 text-amber-500 transition-all duration-500 ${!isDarkMode
+          ? 'opacity-0 rotate-90 scale-0'
+          : 'opacity-100 rotate-0 scale-100'
+          }`}
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -58,11 +57,10 @@ export default function ThemeToggle() {
 
       {/* Moon Icon */}
       <svg
-        className={`absolute w-5 h-5 text-indigo-400 transition-all duration-500 ${
-          isDarkMode 
-            ? 'opacity-100 rotate-0 scale-100' 
-            : 'opacity-0 -rotate-90 scale-0'
-        }`}
+        className={`absolute w-5 h-5 text-indigo-400 transition-all duration-500 ${!isDarkMode
+          ? 'opacity-100 rotate-0 scale-100'
+          : 'opacity-0 -rotate-90 scale-0'
+          }`}
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -76,11 +74,10 @@ export default function ThemeToggle() {
       </svg>
 
       {/* Hover glow effect */}
-      <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-        isDarkMode 
-          ? 'bg-indigo-500/10' 
-          : 'bg-amber-500/10'
-      }`} />
+      <div className={`absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isDarkMode
+        ? 'bg-indigo-500/10'
+        : 'bg-amber-500/10'
+        }`} />
     </button>
   );
 }
