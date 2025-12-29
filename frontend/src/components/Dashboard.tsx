@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from "react";
 import { useTickers } from "@/hooks/useTickers";
 import StockChart from "./StockChart";
 
@@ -40,8 +40,8 @@ export default function Dashboard({
   }, [propSelectedSymbol]);
 
   // Group tickers by symbol and keep the latest data with change calculation
-  const latestTickers = tickers.reduce<Record<string, TickerData>>(
-    (acc, ticker) => {
+  const latestTickers = useMemo(() => {
+    return tickers.reduce<Record<string, TickerData>>((acc, ticker) => {
       if (!acc[ticker.symbol] || acc[ticker.symbol].ts < ticker.ts) {
         const prevPrice = previousPrices.current[ticker.symbol] || ticker.price;
         const change = ticker.price - prevPrice;
@@ -55,11 +55,13 @@ export default function Dashboard({
         previousPrices.current[ticker.symbol] = ticker.price;
       }
       return acc;
-    },
-    {}
-  );
+    }, {});
+  }, [tickers]);
 
-  const uniqueTickers = Object.values(latestTickers);
+  const uniqueTickers = useMemo(
+    () => Object.values(latestTickers),
+    [latestTickers]
+  );
 
   // Auto-select first ticker if none selected
   useEffect(() => {
@@ -69,23 +71,42 @@ export default function Dashboard({
   }, [selectedSymbol, uniqueTickers]);
 
   // Prepare chart data - ensure time is a number (Unix timestamp in seconds)
-  const chartData = tickers
-    .filter((t) => t.symbol === selectedSymbol && t.ts)
-    .map((ticker) => {
-      // Convert milliseconds to seconds for Unix timestamp
-      const timeInSeconds = Math.floor(ticker.ts / 1000);
-      return {
-        time: timeInSeconds, // Number, not string
-        open: ticker.open || ticker.price,
-        high: ticker.high || ticker.price,
-        low: ticker.low || ticker.price,
-        close: ticker.price,
-        value: ticker.price,
-      };
-    })
-    .sort((a, b) => a.time - b.time);
+  const chartData = useMemo(() => {
+    return tickers
+      .filter((t) => t.symbol === selectedSymbol && t.ts)
+      .map((ticker) => {
+        // Convert milliseconds to seconds for Unix timestamp
+        const timeInSeconds = Math.floor(ticker.ts / 1000);
+        return {
+          time: timeInSeconds, // Number, not string
+          open: ticker.open || ticker.price,
+          high: ticker.high || ticker.price,
+          low: ticker.low || ticker.price,
+          close: ticker.price,
+          value: ticker.price,
+        };
+      })
+      .sort((a, b) => a.time - b.time);
+  }, [tickers, selectedSymbol]);
 
-  const selectedTicker = selectedSymbol ? latestTickers[selectedSymbol] : null;
+  const selectedTicker = useMemo(() => {
+    return selectedSymbol ? latestTickers[selectedSymbol] : null;
+  }, [selectedSymbol, latestTickers]);
+
+  const handleSymbolSelect = useCallback((symbol: string) => {
+    setSelectedSymbol(symbol);
+  }, []);
+
+  const handleChartTypeChange = useCallback(
+    (type: "candlestick" | "line" | "ohlc") => {
+      setChartType(type);
+    },
+    []
+  );
+
+  const handleTimeframeChange = useCallback((tf: "1D" | "1W" | "1M" | "3M") => {
+    setTimeframe(tf);
+  }, []);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -232,7 +253,7 @@ export default function Dashboard({
                   key={ticker.symbol}
                   ticker={ticker}
                   isSelected={selectedSymbol === ticker.symbol}
-                  onClick={() => setSelectedSymbol(ticker.symbol)}
+                  onClick={handleSymbolSelect}
                   index={idx}
                 />
               ))
@@ -287,7 +308,7 @@ export default function Dashboard({
                 {(["1D", "1W", "1M", "3M"] as const).map((tf) => (
                   <button
                     key={tf}
-                    onClick={() => setTimeframe(tf)}
+                    onClick={() => handleTimeframeChange(tf)}
                     className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${
                       timeframe === tf
                         ? "bg-surface text-foreground shadow-sm"
@@ -302,7 +323,7 @@ export default function Dashboard({
               {/* Chart Type */}
               <div className="flex bg-secondary rounded-lg p-1">
                 <button
-                  onClick={() => setChartType("line")}
+                  onClick={() => handleChartTypeChange("line")}
                   className={`p-1.5 rounded-md transition-all ${
                     chartType === "line"
                       ? "bg-surface shadow-sm"
@@ -325,7 +346,7 @@ export default function Dashboard({
                   </svg>
                 </button>
                 <button
-                  onClick={() => setChartType("candlestick")}
+                  onClick={() => handleChartTypeChange("candlestick")}
                   className={`p-1.5 rounded-md transition-all ${
                     chartType === "candlestick"
                       ? "bg-surface shadow-sm"
@@ -348,7 +369,7 @@ export default function Dashboard({
                   </svg>
                 </button>
                 <button
-                  onClick={() => setChartType("ohlc")}
+                  onClick={() => handleChartTypeChange("ohlc")}
                   className={`p-1.5 rounded-md transition-all ${
                     chartType === "ohlc"
                       ? "bg-surface shadow-sm"
@@ -440,7 +461,7 @@ export default function Dashboard({
 }
 
 // Stat Card Component
-function StatCard({
+const StatCard = memo(function StatCard({
   label,
   value,
   trend,
@@ -474,10 +495,10 @@ function StatCard({
       </div>
     </div>
   );
-}
+});
 
 // Stock Row Component
-function StockRow({
+const StockRow = memo(function StockRow({
   ticker,
   isSelected,
   onClick,
@@ -485,14 +506,17 @@ function StockRow({
 }: {
   ticker: TickerData;
   isSelected: boolean;
-  onClick: () => void;
+  onClick: (symbol: string) => void;
   index: number;
 }) {
   const isPositive = (ticker.changePercent || 0) >= 0;
+  const handleClick = useCallback(() => {
+    onClick(ticker.symbol);
+  }, [onClick, ticker.symbol]);
 
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className={`p-3 rounded-xl cursor-pointer transition-all duration-200 animate-slide-up ${
         isSelected
           ? "bg-primary/10 border-2 border-primary/30"
@@ -536,4 +560,4 @@ function StockRow({
       </div>
     </div>
   );
-}
+});
