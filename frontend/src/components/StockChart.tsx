@@ -209,7 +209,7 @@ export default function StockChart({
             }
 
             return {
-              time: time as any, // UTCTimestamp
+              time: time as number, // UTCTimestamp (Unix timestamp in seconds)
               open: Math.max(0, open),
               high: Math.max(0, high),
               low: Math.max(0, low),
@@ -240,13 +240,13 @@ export default function StockChart({
         });
 
         const candleData = normalizedData.map((item) => ({
-          time: item.time,
+          time: item.time as number,
           open: item.open,
           high: item.high,
           low: item.low,
           close: item.close,
         }));
-        series.setData(candleData as any);
+        series.setData(candleData as []);
       } else if (chartType === "line") {
         const series = chart.addSeries(LineSeries, {
           color: colors.lineColor,
@@ -262,10 +262,10 @@ export default function StockChart({
         });
 
         const lineData = normalizedData.map((item) => ({
-          time: item.time,
+          time: item.time as number,
           value: item.value,
         }));
-        series.setData(lineData as any);
+        series.setData(lineData as []);
 
         // Add area gradient effect
         series.applyOptions({
@@ -280,13 +280,13 @@ export default function StockChart({
         });
 
         const ohlcData = normalizedData.map((item) => ({
-          time: item.time,
+          time: item.time as number,
           open: item.open,
           high: item.high,
           low: item.low,
           close: item.close,
         }));
-        series.setData(ohlcData as any);
+        series.setData(ohlcData as []);
       }
 
       chartRef.current = chart;
